@@ -1,4 +1,4 @@
-## Minor edit that removes teleporting to vehicle. Turns player towards the vehicle and locks the doors.
+## Minor QOL edit. Removes teleporting to vehicle on spawn. Vehicle is spawned and locked and the player is turned towards the vehicle.
 
 # lunar_garage
 Highly optimized garage system that allows you to add as many garages as you wish!
