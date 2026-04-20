@@ -1,3 +1,5 @@
+## Minor edit that removes teleporting to vehicle. Turns player towards the vehicle and locks the doors.
+
 # lunar_garage
 Highly optimized garage system that allows you to add as many garages as you wish!
 
