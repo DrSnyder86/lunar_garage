@@ -1,4 +1,5 @@
 ## Minor QOL edit. Removes teleporting to vehicle on spawn. Vehicle is spawned and locked and the player is turned towards the vehicle.
+## Config option to send out vehicles to garage on resource start
 
 # lunar_garage
 Highly optimized garage system that allows you to add as many garages as you wish!
