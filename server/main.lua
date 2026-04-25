@@ -2,6 +2,23 @@
 ---@type table<string, number>
 local activeVehicles = {}
 
+---@async
+local function moveOutVehiclesIntoGarages()
+    MySQL.update('UPDATE player_vehicles SET `stored` = 1 WHERE `stored` = 0')
+end
+
+AddEventHandler('onResourceStart', function(resource)
+    if resource ~= cache.resource then return end
+    Wait(100)
+
+    if Config.AutoRespawn then
+        moveOutVehiclesIntoGarages()
+        activeVehicles = {} -- clear cache to prevent desync
+    end
+end)
+
+
+
 lib.callback.register('lunar_garage:getOwnedVehicles', function(source, index, society)
     local player = Framework.getPlayerFromId(source)
     if not player then return end
@@ -62,6 +79,7 @@ lib.callback.register('lunar_garage:getOwnedVehicles', function(source, index, s
         return vehicles
     end
 end)
+
 
 lib.callback.register('lunar_garage:getImpoundedVehicles', function(source, index, society)
     local player = Framework.getPlayerFromId(source)
