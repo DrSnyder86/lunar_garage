@@ -133,13 +133,16 @@ function Utils.hasJobs(jobs)
         jobs = { jobs } ---@cast jobs string[]
     end
 
+    local playerJob = Framework.getJob()
+    if not playerJob then return false end
+
     for _, name in ipairs(jobs) do
-        if Framework.getJob() ~= name then
-            return false
+        if playerJob == name then
+            return true
         end
     end
 
-    return true
+    return false
 end
 
 ---@class KeybindData

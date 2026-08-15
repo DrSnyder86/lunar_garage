@@ -1,7 +1,15 @@
+local contractConfig
+
+local function getContractConfig()
+    contractConfig = contractConfig or Config and Config.Contract
+    return contractConfig
+end
+
 local function transferToPlayer(source, plate, label)
     local player = Framework.getPlayerFromId(source)
+    local contract = getContractConfig()
 
-    if not player then return end
+    if not player or not contract then return end
 
     local vehicle = MySQL.single.await(Queries.getVehicleStrict, { player:getIdentifier(), plate })
 
@@ -39,23 +47,24 @@ local function transferToPlayer(source, plate, label)
     end
 
     MySQL.update.await(Queries.transferVehiclePlayer, { target:getIdentifier(), plate })
-    player:removeItem(Config.Contract.Item, 1)
+    player:removeItem(contract.Item, 1)
     target:removeAccountMoney('money', price)
     player:addAccountMoney('money', price)
 
     TriggerClientEvent('lunar_garage:contractAnim', source, locale('progress_selling'))
-    Wait(Config.Contract.Duration)
+    Wait(contract.Duration or 5000)
     TriggerClientEvent('lunar_garage:showNotification', source, locale('vehicle_sold'))
     Wait(500)
     TriggerClientEvent('lunar_garage:contractAnim', targetId, locale('progress_buying'))
-    Wait(Config.Contract.Duration)
+    Wait(contract.Duration or 5000)
     TriggerClientEvent('lunar_garage:showNotification', targetId, locale('vehicle_bought'))
 end
 
 local function transferToSociety(source, plate)
     local player = Framework.getPlayerFromId(source)
+    local contract = getContractConfig()
 
-    if not player then return end
+    if not player or not contract then return end
 
     local vehicle = MySQL.single.await(Queries.getVehicleStrict, { player:getIdentifier(), plate })
 
@@ -69,17 +78,18 @@ local function transferToSociety(source, plate)
     if not result then return end
 
     MySQL.update.await(Queries.transferVehicleSociety, { player:getJob(), plate })
-    player:removeItem(Config.Contract.Item, 1)
+    player:removeItem(contract.Item, 1)
 
     TriggerClientEvent('lunar_garage:contractAnim', source, locale('progress_transfering'))
-    Wait(Config.Contract.Duration)
+    Wait(contract.Duration or 5000)
     TriggerClientEvent('lunar_garage:showNotification', source, locale('vehicle_transfered'))
 end
 
 local function withdrawFromSociety(source, plate)
     local player = Framework.getPlayerFromId(source)
+    local contract = getContractConfig()
 
-    if not player then return end
+    if not player or not contract then return end
 
     local vehicle = MySQL.single.await(Queries.getVehicle, { player:getIdentifier(), plate })
 
@@ -93,23 +103,37 @@ local function withdrawFromSociety(source, plate)
     if not result then return end
 
     MySQL.update.await(Queries.withdrawVehicleSociety, { plate })
-    player:removeItem(Config.Contract.Item, 1)
+    player:removeItem(contract.Item, 1)
 
     TriggerClientEvent('lunar_garage:contractAnim', source, locale('progress_withdrawing'))
-    Wait(Config.Contract.Duration)
+    Wait(contract.Duration or 5000)
     TriggerClientEvent('lunar_garage:showNotification', source, locale('vehicle_withdrawn'))
 end
 
-Framework.registerUsableItem(Config.Contract.Item, function(source)
-    local option, plate, label = lib.callback.await('lunar_garage:getContractOption', source)
+CreateThread(function()
+    local waited = 0
 
-    if not option or not plate then return end
+    while not Framework or not Framework.registerUsableItem or not getContractConfig() or not contractConfig.Item do
+        if waited >= 5000 then
+            print('[lunar_garage] Contract item registration skipped because Config.Contract or Framework was not loaded.')
+            return
+        end
 
-    if option == 'transfer_player' then
-        transferToPlayer(source, plate, label)
-    elseif option == 'transfer_society' then
-        transferToSociety(source, plate)
-    elseif option == 'withdraw_society' then
-        withdrawFromSociety(source, plate)
+        Wait(100)
+        waited = waited + 100
     end
+
+    Framework.registerUsableItem(contractConfig.Item, function(source)
+        local option, plate, label = lib.callback.await('lunar_garage:getContractOption', source)
+
+        if not option or not plate then return end
+
+        if option == 'transfer_player' then
+            transferToPlayer(source, plate, label)
+        elseif option == 'transfer_society' then
+            transferToSociety(source, plate)
+        elseif option == 'withdraw_society' then
+            withdrawFromSociety(source, plate)
+        end
+    end)
 end)

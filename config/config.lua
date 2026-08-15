@@ -1,5 +1,7 @@
 Config = {}
 Config.MaxDistance = 10.0 -- Max interact distance
+Config.PropertyGarageDistance = 3.0 -- Property garage TextUI interact distance
+Config.PropertyGarageParkingDistance = 3.0 -- Property garage vehicle parking TextUI distance
 Config.UseKeySystem = true -- Implemented only for qb-vehiclekeys, you can implement it for other systems in cl_edit.lua
 Config.SpawnpointCheck = true -- Checks if the vehicle spawnpoint is empty before spawning it.
 Config.AutoRespawn = true -- True == auto respawn cars that are outside into your garage on script restart, false == does not put them into your garage and players have to go to the impound
@@ -168,10 +170,10 @@ Config.Garages = {
     {
         Visible = true,
         Type = 'car',
-        Position = vector3(107.32, 6611.77, 31.98),
+        Position = vector3(123.57, 6627.9, 31.92),
         PedPosition = vector4(123.57, 6627.9, 31.92, 229.77),
         Model = `s_m_m_armoured_01`,
-        SpawnPosition = vector4(128.09, 6624.33, 31.79, 135.63),
+        SpawnPosition = vector4(134.14, 6631.52, 31.69, 135.13),
         Interior = 'small'
     },
     {
@@ -210,7 +212,9 @@ Config.Garages = {
         PedPosition = vector4(442.54, -974.89, 25.7, 178.7),
         Model = `s_m_m_armoured_01`,
         SpawnPosition = vector4(450.43, -975.7, 25.7, 95.01),
-        Interior = 'large'
+        Jobs = { 'police', 'leo' },
+        -- Jobs = 'police',
+        Interior = 'large',
     },
     -- sahp lsf
     {
@@ -339,15 +343,26 @@ Config.Garages = {
         SpawnPosition = vector4(-1480.0311, -496.4789, 32.8068, 215.6816),
         Interior = 'large'
     },
+    -- Alta Parking
     {
         Visible = true,
         Type = 'car',
-        Position = vector3(-1667.8083, 72.3026, 63.5343),
-        PedPosition = vector4(-1677.5203, 66.0455, 63.9183, 317.4938),
+        Position = vector3(-340.09, -876.43, 30.75),
+        PedPosition = vector4(-348.82, -876.5, 31.07, 164.04),
         Model = `s_m_m_armoured_01`,
-        SpawnPosition = vector4(-1667.8083, 72.3026, 63.5343, 48.9008),
+        SpawnPosition = vector4(-340.09, -876.43, 30.75, 167.72),
         Interior = 'large'
     },
+    -- -- Richman Fire
+    -- {
+    --     Visible = true,
+    --     Type = 'car',
+    --     Position = vector3(-1667.8083, 72.3026, 63.5343),
+    --     PedPosition = vector4(-1677.5203, 66.0455, 63.9183, 317.4938),
+    --     Model = `s_m_m_armoured_01`,
+    --     SpawnPosition = vector4(-1667.8083, 72.3026, 63.5343, 48.9008),
+    --     Interior = 'large'
+    -- },
     {
         Visible = true,
         Type = 'car',
@@ -360,110 +375,111 @@ Config.Garages = {
     {
         Visible = true,
         Type = 'air',
+        Garage = 'airporthangar',
         Position = vector3(-1182.7245, -2852.9495, 14.0404),
         PedPosition = vector4(-1186.2985, -2841.2820, 13.9461, 236.5903),
         Model = `s_m_m_armoured_01`,
         SpawnPosition = vector4(-1178.4406, -2845.8442, 13.9457, 333.0016),
     },
     -- mission row heli
-    {
-        Visible = false,
-        Type = 'air',
-        Position = vector3(463.93, -982.38, 43.69),
-        PedPosition = vector4(463.93, -982.38, 43.69, 92.75),
-        Model = `s_m_m_armoured_01`,
-        SpawnPosition = vector4(449.168, -981.325, 43.691, 87.234),
-    },
-    -- lspd admin bldg
-    {
-        Visible = false,
-        Type = 'air',
-        Position = vector3(63.77, -405.36, 92.75),
-        PedPosition = vector4(63.77, -405.36, 92.75, 249.58),
-        Model = `s_m_m_armoured_01`,
-        SpawnPosition = vector4(76.6, -416.15, 94.55, 69.82),
-    },
-    -- sahp north
-    {
-        Visible = false,
-        Type = 'air',
-        Position = vector3(2531.1, 5044.69, 44.89),
-        PedPosition = vector4(2531.1, 5044.69, 44.89, 108.37),
-        Model = `s_m_m_armoured_01`,
-        SpawnPosition = vector4(2522.96, 5032.36, 44.64, 285.66),
-    },
-    -- paleto heliport
-    {
-        Visible = true,
-        Type = 'air',
-        Position = vector3(-298.34, 6109.07, 31.52),
-        PedPosition = vector4(-298.34, 6109.07, 31.52, 45.07),
-        Model = `s_m_m_armoured_01`,
-        SpawnPosition = vector4(-305.87, 6116.61, 33.41, 221.01),
-    },
-    -- paleto pd heli
-    {
-        Visible = false,
-        Type = 'air',
-        Position = vector3(-454.38, 5985.44, 31.28),
-        PedPosition = vector4(-454.38, 5985.44, 31.28, 49.99),
-        Model = `s_m_m_armoured_01`,
-        SpawnPosition = vector4(-475.4, 5988.29, 31.34, 320.05),
-    },
-    -- paleto airport heli
-    {
-        Visible = true,
-        Type = 'air',
-        Position = vector3(-1767.51, 5292.75, 6.95),
-        PedPosition = vector4(-1767.51, 5292.75, 6.95, 310.87),
-        Model = `s_m_m_armoured_01`,
-        SpawnPosition = vector4(-1775.26, 5285.55, 8.96, 312.92),
-    },
-    -- lsia heli
-    {
-        Visible = true,
-        Type = 'air',
-        Position = vector3(-1855.04, -3150.94, 13.94),
-        PedPosition = vector4(-1855.04, -3150.94, 13.94, 335.73),
-        Model = `s_m_m_armoured_01`,
-        SpawnPosition = vector4(-1849.8, -3141.67, 15.98, 154.11),
-    },
-    -- higgins heli
-    {
-        Visible = true,
-        Type = 'air',
-        Position = vector3(-749.51, -1510.65, 5.02),
-        PedPosition = vector4(-750.88, -1509.92, 5.03, 19.66),
-        Model = `s_m_m_armoured_01`,
-        SpawnPosition = vector4(-765.91, -1497.59, 5.0, 290.30),
-    },
-    -- lsymc boathouse
-    {
-        Visible = true,
-        Type = 'boat',
-        Position = vector3(-733.79, -1384.35, 1.6),
-        PedPosition = vector4(-733.79, -1384.35, 1.6, 52.19),
-        Model = `s_m_m_armoured_01`,
-        SpawnPosition = vector4(-735.42, -1378.0, 0.88, 118.12)
-    },
-    -- millars boathouse
-    {
-        Visible = true,
-        Type = 'boat',
-        Position = vector3(1299.02, 4216.42, 33.91),
-        PedPosition = vector4(1299.02, 4216.42, 33.91, 166.8),
-        Model = `s_m_m_armoured_01`,
-        SpawnPosition = vector4(1296.78, 4203.76, 30.12, 169.03)
-    },
-    -- paleto pier
-    {
-        Visible = true,
-        Type = 'boat',
-        Position = vector3(-362.03, 6660.86, 6.47),
-        PedPosition = vector4(-362.03, 6660.86, 6.47, 132.17),
-        Model = `s_m_m_armoured_01`,
-        SpawnPosition = vector4(-365.37, 6657.15, 0.1, 54.0)
-    },
+    -- {
+    --     Visible = false,
+    --     Type = 'air',
+    --     Position = vector3(463.93, -982.38, 43.69),
+    --     PedPosition = vector4(463.93, -982.38, 43.69, 92.75),
+    --     Model = `s_m_m_armoured_01`,
+    --     SpawnPosition = vector4(449.168, -981.325, 43.691, 87.234),
+    -- },
+    -- -- lspd admin bldg
+    -- {
+    --     Visible = false,
+    --     Type = 'air',
+    --     Position = vector3(63.77, -405.36, 92.75),
+    --     PedPosition = vector4(63.77, -405.36, 92.75, 249.58),
+    --     Model = `s_m_m_armoured_01`,
+    --     SpawnPosition = vector4(76.6, -416.15, 94.55, 69.82),
+    -- },
+    -- -- sahp north
+    -- {
+    --     Visible = false,
+    --     Type = 'air',
+    --     Position = vector3(2531.1, 5044.69, 44.89),
+    --     PedPosition = vector4(2531.1, 5044.69, 44.89, 108.37),
+    --     Model = `s_m_m_armoured_01`,
+    --     SpawnPosition = vector4(2522.96, 5032.36, 44.64, 285.66),
+    -- },
+    -- -- paleto heliport
+    -- {
+    --     Visible = true,
+    --     Type = 'air',
+    --     Position = vector3(-298.34, 6109.07, 31.52),
+    --     PedPosition = vector4(-298.34, 6109.07, 31.52, 45.07),
+    --     Model = `s_m_m_armoured_01`,
+    --     SpawnPosition = vector4(-305.87, 6116.61, 33.41, 221.01),
+    -- },
+    -- -- paleto pd heli
+    -- {
+    --     Visible = false,
+    --     Type = 'air',
+    --     Position = vector3(-454.38, 5985.44, 31.28),
+    --     PedPosition = vector4(-454.38, 5985.44, 31.28, 49.99),
+    --     Model = `s_m_m_armoured_01`,
+    --     SpawnPosition = vector4(-475.4, 5988.29, 31.34, 320.05),
+    -- },
+    -- -- paleto airport heli
+    -- {
+    --     Visible = true,
+    --     Type = 'air',
+    --     Position = vector3(-1767.51, 5292.75, 6.95),
+    --     PedPosition = vector4(-1767.51, 5292.75, 6.95, 310.87),
+    --     Model = `s_m_m_armoured_01`,
+    --     SpawnPosition = vector4(-1775.26, 5285.55, 8.96, 312.92),
+    -- },
+    -- -- lsia heli
+    -- {
+    --     Visible = true,
+    --     Type = 'air',
+    --     Position = vector3(-1855.04, -3150.94, 13.94),
+    --     PedPosition = vector4(-1855.04, -3150.94, 13.94, 335.73),
+    --     Model = `s_m_m_armoured_01`,
+    --     SpawnPosition = vector4(-1849.8, -3141.67, 15.98, 154.11),
+    -- },
+    -- -- higgins heli
+    -- {
+    --     Visible = true,
+    --     Type = 'air',
+    --     Position = vector3(-749.51, -1510.65, 5.02),
+    --     PedPosition = vector4(-750.88, -1509.92, 5.03, 19.66),
+    --     Model = `s_m_m_armoured_01`,
+    --     SpawnPosition = vector4(-765.91, -1497.59, 5.0, 290.30),
+    -- },
+    -- -- lsymc boathouse
+    -- {
+    --     Visible = true,
+    --     Type = 'boat',
+    --     Position = vector3(-733.79, -1384.35, 1.6),
+    --     PedPosition = vector4(-733.79, -1384.35, 1.6, 52.19),
+    --     Model = `s_m_m_armoured_01`,
+    --     SpawnPosition = vector4(-735.42, -1378.0, 0.88, 118.12)
+    -- },
+    -- -- millars boathouse
+    -- {
+    --     Visible = true,
+    --     Type = 'boat',
+    --     Position = vector3(1299.02, 4216.42, 33.91),
+    --     PedPosition = vector4(1299.02, 4216.42, 33.91, 166.8),
+    --     Model = `s_m_m_armoured_01`,
+    --     SpawnPosition = vector4(1296.78, 4203.76, 30.12, 169.03)
+    -- },
+    -- -- paleto pier
+    -- {
+    --     Visible = true,
+    --     Type = 'boat',
+    --     Position = vector3(-362.03, 6660.86, 6.47),
+    --     PedPosition = vector4(-362.03, 6660.86, 6.47, 132.17),
+    --     Model = `s_m_m_armoured_01`,
+    --     SpawnPosition = vector4(-365.37, 6657.15, 0.1, 54.0)
+    -- },
 }
 
 Config.GarageInteriors = {

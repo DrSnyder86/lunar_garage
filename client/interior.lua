@@ -3,8 +3,23 @@
 
 local busy, currentIndex, point, entities, lastCoords = false, nil, nil, {}, nil
 
+local function getVehicleGarageType(model)
+    if IsThisModelABoat(model) or IsThisModelAJetski(model) then
+        return 'boat'
+    end
+
+    if IsThisModelAPlane(model) or IsThisModelAHeli(model) then
+        return 'air'
+    end
+
+    return 'car'
+end
+
 local function chooseVehicle(index)
-    if busy then return end
+    if busy then
+        if IsScreenFadedOut() then DoScreenFadeIn(500) end
+        return
+    end
 
     Binds.first.removeListener('choose_vehicle')
     busy = true
@@ -50,15 +65,26 @@ lib.onCache('vehicle', function(vehicle)
     end
 end)
 
----@param index integer The garage index
+---@param index integer|string The garage index
 function EnterInterior(index)
-    local garage = Config.Garages[index]
+    local garage = GetLunarGarage and GetLunarGarage(index) or Config.Garages[index]
 
-    if not garage?.Interior then return end
+    if not garage?.Interior then
+        if IsScreenFadedOut() then DoScreenFadeIn(500) end
+        return
+    end
 
     local interior = Config.GarageInteriors[garage.Interior]
 
-    if busy then return end
+    if not interior then
+        if IsScreenFadedOut() then DoScreenFadeIn(500) end
+        return
+    end
+
+    if busy then
+        if IsScreenFadedOut() then DoScreenFadeIn(500) end
+        return
+    end
 
     busy, currentIndex = true, index
 
@@ -71,7 +97,15 @@ function EnterInterior(index)
     SetEntityHeading(cache.ped, interior.Coords.w)
     SetGameplayCamRelativeHeading(0.0)
 
-    local vehicles = lib.callback.await('lunar_garage:enterInterior', false, garage.Type)
+    local vehicles = lib.callback.await('lunar_garage:enterInterior', false, index, garage.Type)
+
+    if not vehicles then
+        currentIndex = nil
+        SetEntityCoords(cache.ped, lastCoords.x, lastCoords.y, lastCoords.z)
+        DoScreenFadeIn(500)
+        busy = false
+        return
+    end
 
     local vehicleIndex = 1
     for i = 1, #interior.Vehicles do
@@ -86,7 +120,7 @@ function EnterInterior(index)
             ---@type VehicleProperties
             local props = json.decode(vehicle.mods or vehicle.vehicle)
 
-            if props?.model and IsModelValid(props.model) then
+            if props?.model and getVehicleGarageType(props.model) == garage.Type and IsModelValid(props.model) then
                 lib.requestModel(props.model)
                 Framework.spawnLocalVehicle(props.model, coords.xyz, coords.w, function(entity)
                     lib.setVehicleProperties(entity, props)
@@ -155,3 +189,7 @@ function EnterInterior(index)
         end
     })
 end
+
+RegisterNetEvent('lunar_garage:client:enterInterior', function(index)
+    EnterInterior(index)
+end)

@@ -102,8 +102,6 @@ function SetVehicleOwner(plate, vehicle)
     if not Config.UseKeySystem then return end
 
     if Framework.name == 'qbx_core' then
-        -- Primary Qbox key handoff is done server-side in server/main.lua as soon as the server-created entity exists.
-        -- This fallback covers any future client-spawned flow.
         if vehicle and vehicle ~= 0 and GetResourceState('qbx_vehiclekeys') == 'started' then
             TriggerServerEvent('lunar_garage:server:giveVehicleKeys', NetworkGetNetworkIdFromEntity(vehicle))
         end
