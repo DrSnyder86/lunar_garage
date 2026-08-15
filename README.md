@@ -1,6 +1,7 @@
 # lunar_garage - Qbox Integration Build
 
-This copy of `lunar_garage` has been adjusted to work with Qbox/QBX resources, `qbx_properties`, and the included `qr-vehicleshop` build.
+This copy of `lunar_garage` has been adjusted to work with Qbox/QBX resources, `qbx_properties`, and the optional qbox compatible fork of `qr-vehicleshop`.
+
 
 ## What Was Changed
 
